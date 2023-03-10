@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: nifti2dicom
+Version: 0.1
+Summary: Package translate nifti to dicom files
+Author: Dominik Becker
+Author-email: dominik.becker1@uni-goettingen.de

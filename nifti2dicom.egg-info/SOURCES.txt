@@ -1,0 +1,8 @@
+setup.py
+nifti2dicom/__init__.py
+nifti2dicom/nifti2dicom.py
+nifti2dicom.egg-info/PKG-INFO
+nifti2dicom.egg-info/SOURCES.txt
+nifti2dicom.egg-info/dependency_links.txt
+nifti2dicom.egg-info/requires.txt
+nifti2dicom.egg-info/top_level.txt
