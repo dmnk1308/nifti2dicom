@@ -5,7 +5,7 @@ from nibabel import processing
 import numpy as np
 import os
 
-def nifti2dicom(path_in, path_out, draft_path, y_flip=True, z_flip=True, x_flip=True, resample=False):
+def nifti2dicom(path_in, path_out, draft_path='template.dcm', y_flip=True, z_flip=True, x_flip=True, resample=False):
     ''' 
     Converts nifti images to dicom images.
 
@@ -74,11 +74,11 @@ if __name__=='__main__':
 
     parser.add_argument('src')
     parser.add_argument('dest') 
-    parser.add_argument('draft')
+    parser.add_argument('-d', '--draft', action='store', default='template.dcm')
     parser.add_argument('-x', '--x_flip', action='store_false')
     parser.add_argument('-y', '--y_flip', action='store_false')
     parser.add_argument('-z', '--z_flip', action='store_false')
 
     args = vars(parser.parse_args())
     
-    nifti2dicom(path_in=args['src'], path_out=args['dest'], draft_path=args['draft'])
+    nifti2dicom(path_in=args['src'], path_out=args['dest'], draft_path=args['draft'], x_flip=args['x_flip'], y_flip=args['y_flip'], z_flip=args['z_flip'])
