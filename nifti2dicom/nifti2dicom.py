@@ -18,7 +18,7 @@ def nifti2dicom(path_in, path_out, draft_path='template.dcm', modality='CT', y_f
 
     os.makedirs(path_out, exist_ok=True)
     dcm_draft = pydicom.dcmread(draft_path)
-    if modality == 'PET':
+    if modality == 'PT':
         dcm_draft.file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.128'
     nii = nib.load(path_in)
 
