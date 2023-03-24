@@ -5,7 +5,7 @@ from nibabel import processing
 import numpy as np
 import os
 
-def nifti2dicom(path_in, path_out, draft_path='template.dcm', y_flip=True, z_flip=True, x_flip=True, resample=False):
+def nifti2dicom(path_in, path_out, draft_path='template.dcm', modality='CT', y_flip=True, z_flip=True, x_flip=True, resample=False):
     ''' 
     Converts nifti images to dicom images.
 
@@ -18,6 +18,8 @@ def nifti2dicom(path_in, path_out, draft_path='template.dcm', y_flip=True, z_fli
 
     os.makedirs(path_out, exist_ok=True)
     dcm_draft = pydicom.dcmread(draft_path)
+    if modality == 'PET':
+        dcm_draft.file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.128'
     nii = nib.load(path_in)
 
     if resample:
@@ -62,7 +64,7 @@ def nifti2dicom(path_in, path_out, draft_path='template.dcm', y_flip=True, z_fli
     dcm_draft.SOPClassUID = '1.2.840.10008.1.2'
     dcm_draft.Rows = imgs.shape[1]
     dcm_draft.Columns = imgs.shape[2]
-    dcm_draft.Modality = 'CT'
+    dcm_draft.Modality = modality
 
     for i, img in enumerate(imgs):
         dcm_draft.PixelData = img.astype(np.int16).tobytes()
