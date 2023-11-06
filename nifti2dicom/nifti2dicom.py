@@ -5,7 +5,7 @@ from nibabel import processing
 import numpy as np
 import os
 
-def nifti2dicom(path_in, path_out, draft_path='template.dcm', modality='CT', y_flip=True, z_flip=True, x_flip=True, resample=False):
+def nifti2dicom(path_in, path_out, draft_path='template.dcm', modality='CT', y_flip=False, z_flip=False, x_flip=False, resample=False):
     ''' 
     Converts nifti images to dicom images.
 
@@ -52,24 +52,29 @@ def nifti2dicom(path_in, path_out, draft_path='template.dcm', modality='CT', y_f
     slice_thickness = nii.header['pixdim'][3]
     x_dim, y_dim = nii.header['pixdim'][1], nii.header['pixdim'][2]
     dcm_draft.BitsStored = nii.header['bitpix']
-    dcm_draft.PixelSpacing = [x_dim, y_dim]
     dcm_draft.SliceThickness = slice_thickness
     dcm_draft.SamplesPerPixel = 1
     dcm_draft.BitsAllocated = 16
-    dcm_draft.BitsStored = 16
-    dcm_draft.HighBit = 15
+    dcm_draft.BitsStored = 12
+    dcm_draft.HighBit = 11
     dcm_draft.PixelRepresentation = 1
     dcm_draft.PhotometricInterpretation = 'MONOCHROME2'
     dcm_draft.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
-    dcm_draft.SOPClassUID = '1.2.840.10008.1.2'
     dcm_draft.Rows = imgs.shape[1]
     dcm_draft.Columns = imgs.shape[2]
     dcm_draft.Modality = modality
+    x_offset = nii.header['qoffset_x']
+    y_offset = nii.header['qoffset_y']
+    z_offset = nii.header['qoffset_z']
+    dcm_draft.add_new([0x0020, 0x0037], 'DS', [-1, 0, 0, 0, -1, 0])
+    dcm_draft.add_new([0x0028,0x0030], 'DS', [float(x_dim), float(y_dim)])
 
     for i, img in enumerate(imgs):
+        dcm_draft.add_new([0x0020, 0x0032], 'DS', [-x_offset, -y_offset, z_offset+slice_thickness*i])
         dcm_draft.PixelData = img.astype(np.int16).tobytes()
         dcm_draft.InstanceNumber = i+1
         pydicom.write_file(path_out + '/' + str(i+1) + '.dcm', dcm_draft)
+
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='nifti2dicom', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
